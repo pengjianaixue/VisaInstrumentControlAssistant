@@ -34,6 +34,9 @@
     <ClCompile Include="visainstrumentcontrolassistant.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="visacontrol.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -42,6 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="visainstrumentcontrolassistant.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
+    <QtMoc Include="visacontrol.h">
       <Filter>Header Files</Filter>
     </QtMoc>
   </ItemGroup>
