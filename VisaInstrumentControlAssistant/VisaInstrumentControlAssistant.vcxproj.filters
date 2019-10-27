@@ -37,9 +37,18 @@
     <ClCompile Include="visacontrol.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="instrumentconfiguration.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QDelegateTemplate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="QDelegateTemplate.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -50,9 +59,15 @@
     <QtMoc Include="visacontrol.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="instrumentconfiguration.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="visainstrumentcontrolassistant.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="instrumentconfiguration.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>
@@ -63,5 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="VisaInstrumentControlAssistant.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="cpp.hint" />
   </ItemGroup>
 </Project>

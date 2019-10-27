@@ -31,6 +31,7 @@ QString VisaControl::readResponseFromInstrument()
 	{
 		return QString("read time out");
 	}
+	return QString("read fail");
 	
 }
 
