@@ -43,6 +43,9 @@
     <ClCompile Include="QDelegateTemplate.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="CommunicationAddressConfigure.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h">
@@ -62,12 +65,18 @@
     <QtMoc Include="instrumentconfiguration.h">
       <Filter>Header Files</Filter>
     </QtMoc>
+    <QtMoc Include="CommunicationAddressConfigure.h">
+      <Filter>Header Files</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="visainstrumentcontrolassistant.ui">
       <Filter>Form Files</Filter>
     </QtUic>
     <QtUic Include="instrumentconfiguration.ui">
+      <Filter>Form Files</Filter>
+    </QtUic>
+    <QtUic Include="CommunicationAddressConfigure.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

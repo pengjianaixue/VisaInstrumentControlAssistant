@@ -3,9 +3,8 @@
 
 
 template <typename	ET>
-QDelegateTemplate<ET>::QDelegateTemplate(QWidget *parent, const QString  &InputMask,const QStringList  &PreInputContents, bool IsEnableClearButton)
-	: QItemDelegate(parent), m_InputMask(InputMask), m_PreInputContents(PreInputContents),
-	  m_ClearButtonIsEnable(IsEnableClearButton)
+QDelegateTemplate<ET>::QDelegateTemplate(QWidget *parent)
+	: QItemDelegate(parent)
 {
 	
 }
@@ -20,44 +19,35 @@ QWidget * QDelegateTemplate<ET>::createEditor(QWidget *parent, const QStyleOptio
 {
 	ET *editor = new ET(parent);
 	qDebug() << typeid(ET*).name();
-	//editor->setPlaceholderText(m_InputMask);
-	//editor->setValidator(m_InputValidator);
-	//editor->setAlignment(Qt::AlignCenter);
-	editor->setStyleSheet("background-color:rgba(193, 205, 205)");
-	//editor->setFontPointSize(10);
-	//editor->setAcceptRichText(true);
-	/*if (m_PreInputContents.length()!=0)
-	{
-		QCompleter *MyInfor = new QCompleter(m_PreInputContents);
-		editor->setCompleter(MyInfor);
-	}*/
-	/*if (m_ClearButtonIsEnable)
-	{
-		
-		editor->setClearButtonEnabled(true);
-	}*/
-	
-	return (QWidget *)editor;
+	m_editorSetFunction(editor, index.row(), index.column());
+	return (QWidget*)editor;
 }
 template <typename	ET>
 void QDelegateTemplate<ET>::setEditorData(QWidget *editor, const QModelIndex &index) const
 {
 	QString value = index.model()->data(index, Qt::EditRole).toString();
 	ET *Editor = static_cast<ET*>(editor);
-	/*textEditor->setClearButtonEnabled(true);*/
 	qDebug() << typeid(Editor).name();
-	if (typeid(Editor) == typeid(QComboBox*))
+	if (m_editorDataOpFunction)
 	{
-		((QComboBox*)Editor)->setCurrentText(value);
+		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA);
 	}
-	else if (typeid(Editor) == typeid(QLineEdit*) )
+	else
 	{
-		((QLineEdit*)Editor)->setText(value);
+		if (typeid(Editor) == typeid(QComboBox*))
+		{
+			((QComboBox*)Editor)->setCurrentText(value);
+		}
+		else if (typeid(Editor) == typeid(QLineEdit*))
+		{
+			((QLineEdit*)Editor)->setText(value);
+		}
+		else if (typeid(Editor) == typeid(QTextEdit*))
+		{
+			((QTextEdit*)Editor)->setText(value);
+		}
 	}
-	else if (typeid(Editor) == typeid(QTextEdit*))
-	{
-		((QTextEdit*)Editor)->setText(value);
-	}
+	
 	
 }
 template <typename	ET>
@@ -65,21 +55,24 @@ void QDelegateTemplate<ET>::setModelData(QWidget *editor, QAbstractItemModel *mo
 {
 	ET *internaleEditor = static_cast<ET*>(editor);
 	QVariant value;
-	if (typeid(internaleEditor) == typeid(QTextEdit*))
+	if (m_editorDataOpFunction)
 	{
-		 value = ((QTextEdit*)(internaleEditor))->toPlainText();
-	}
-	else if (typeid(internaleEditor) == typeid(QLineEdit*))
-	{
-		 value = ((QLineEdit*)(internaleEditor))->text();
-	}
-	else if (typeid(internaleEditor) == typeid(QComboBox*))
-	{
-		 value = ((QComboBox*)(internaleEditor))->currentText();
+		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA);
 	}
 	else
 	{
-		//static_assert(false,"the QDelegateTemplate not support this Qt Class");
+		if (typeid(internaleEditor) == typeid(QTextEdit*))
+		{
+			value = ((QTextEdit*)(internaleEditor))->toPlainText();
+		}
+		else if (typeid(internaleEditor) == typeid(QLineEdit*))
+		{
+			value = ((QLineEdit*)(internaleEditor))->text();
+		}
+		else if (typeid(internaleEditor) == typeid(QComboBox*))
+		{
+			value = ((QComboBox*)(internaleEditor))->currentText();
+		}
 	}
 	model->setData(index, value, Qt::EditRole);
 }
@@ -88,3 +81,24 @@ void QDelegateTemplate<ET>::updateEditorGeometry(QWidget *editor, const QStyleOp
 {
 	editor->setGeometry(option.rect);
 }
+
+template<typename ET>
+void QDelegateTemplate<ET>::registerEditorSetFunction(EDITORSETFUNCTION &&editorSetFunction)
+{
+	if (editorSetFunction !=nullptr)
+	{
+		m_editorSetFunction = editorSetFunction;
+	}
+}
+
+template<typename ET>
+void QDelegateTemplate<ET>::registerEditorDataOperationFunction(EDITORDATAOPFUNCTION &&editorDataOpFunction)
+{
+	if (editorDataOpFunction != nullptr)
+	{
+		m_editorDataOpFunction = editorDataOpFunction;
+	}
+}
+
+
+

@@ -1,7 +1,9 @@
 <RCC>
-  <qresource prefix="VisaInstrumentControlAssistant"/>
-  <qresource prefix="Icon">
+  <qresource prefix="/VisaInstrumentControlAssistant"/>
+  <qresource prefix="/Icon">
+    <file>Resource/system_configuration.png</file>
     <file>Resource/instrument.png</file>
     <file>Resource/command.png</file>
+    <file>Resource/Configuration.png</file>
   </qresource>
 </RCC>

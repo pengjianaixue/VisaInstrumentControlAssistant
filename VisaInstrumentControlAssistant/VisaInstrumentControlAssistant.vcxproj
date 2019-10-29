@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{B12702AD-ABFB-343A-A199-8E24837244A3}</ProjectGuid>
     <Keyword>QtVS_v301</Keyword>
-    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -30,7 +30,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v140</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -82,7 +82,7 @@
     <QtModules>core;gui;uitools;widgets;winextras</QtModules>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="QtSettings">
-    <QtInstall>5.13.1</QtInstall>
+    <QtInstall>5.9.7_win32</QtInstall>
     <QtModules>core;gui;uitools;widgets;winextras</QtModules>
   </PropertyGroup>
   <PropertyGroup Label="QtSettings" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -186,6 +186,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommunicationAddressConfigure.cpp" />
     <ClCompile Include="instrumentconfiguration.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="QDelegateTemplate.cpp" />
@@ -200,12 +201,14 @@
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="instrumentconfiguration.h" />
+    <QtMoc Include="CommunicationAddressConfigure.h" />
     <ClInclude Include="QDelegateTemplate.h" />
     <ClInclude Include="stdafx.h" />
     <QtMoc Include="visacontrol.h" />
     <QtMoc Include="visainstrumentcontrolassistant.h" />
   </ItemGroup>
   <ItemGroup>
+    <QtUic Include="CommunicationAddressConfigure.ui" />
     <QtUic Include="instrumentconfiguration.ui" />
     <QtUic Include="visainstrumentcontrolassistant.ui" />
   </ItemGroup>
