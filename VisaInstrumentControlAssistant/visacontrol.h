@@ -10,12 +10,14 @@ public:
 	~VisaControl();
 	bool IsConnect() const;
 public slots:
-	bool sendCmdToInstrument(const QString &commandstr);
+	bool sendCommandToInstrument(const QString &commandstr);
 	QString readResponseFromInstrument();
+	QString sendCommandAndReadResponse(const QString &commandstr);
 	bool openInstrument(const QString &instrumentConncetStr);
 	bool setVisaTimeOutVaule(unsigned int ms);
 signals:
 	void hasRecveiveReponseFromInstrument(const QString &);
+	void hasSendCommandToInstrumentRet(const QString &,int viStatus);
 	void hasSendCommandToInstrument(const QString &);
 private:
 	bool openInstrumentRM();

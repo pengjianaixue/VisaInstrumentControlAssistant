@@ -25,6 +25,8 @@ private:
 	void initUi();
 	bool conncetSlots();
 	QToolButton *getQToolButtonCellWidget();
+	//QWidget     *getQCheckBoxCellWidget();
+	QCheckBox   *getQCheckBoxCellWidget();
 
 private:
 	Ui::instrumentconfiguration ui;

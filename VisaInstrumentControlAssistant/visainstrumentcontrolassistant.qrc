@@ -1,9 +1,14 @@
 <RCC>
-  <qresource prefix="/VisaInstrumentControlAssistant"/>
-  <qresource prefix="/Icon">
-    <file>Resource/system_configuration.png</file>
-    <file>Resource/instrument.png</file>
-    <file>Resource/command.png</file>
-    <file>Resource/Configuration.png</file>
-  </qresource>
+    <qresource prefix="/VisaInstrumentControlAssistant"/>
+    <qresource prefix="/Icon">
+        <file>Resource/system_configuration.png</file>
+        <file>Resource/instrument.png</file>
+        <file>Resource/command.png</file>
+        <file>Resource/Configuration.png</file>
+        <file>Resource/clean up.png</file>
+        <file>Resource/system_enable.png</file>
+        <file>Resource/checkbox_checked.png</file>
+        <file>Resource/checkbox_checked_disabled.png</file>
+        <file>Resource/checkbox_checked_focus.png</file>
+    </qresource>
 </RCC>

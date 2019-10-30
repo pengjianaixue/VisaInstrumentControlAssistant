@@ -41,6 +41,22 @@ QString VisaControl::readResponseFromInstrument()
 	
 }
 
+QString VisaControl::sendCommandAndReadResponse(const QString &commandstr)
+{
+	if (m_viOpenFlag)
+	{
+		if (sendCommandToInstrument(commandstr))
+		{
+			return readResponseFromInstrument();
+		}
+		else
+		{
+			return QString();
+		}
+	}
+	return QString();
+}
+
 bool VisaControl::openInstrument(const QString &instrumentConncetStr)
 {
 	if (m_viOpenFlag)
@@ -80,9 +96,11 @@ bool VisaControl::openInstrumentRM()
 	return openstatus == VI_SUCCESS;
 }
 
-bool VisaControl::sendCmdToInstrument(const QString &commandstr)
+bool VisaControl::sendCommandToInstrument(const QString &commandstr)
 {
 	ViStatus sendstatus  = viPrintf(m_viSession, const_cast<ViRsrc>(commandstr.toStdString().c_str()));
-	emit hasSendCommandToInstrument(commandstr + "SendStatus: " + (sendstatus == VI_SUCCESS ? "Success": ("error code--"+QString::number(sendstatus))));
+	QString commandstremit = std::move(commandstr);
+	emit hasSendCommandToInstrument("Send Command: "+ commandstremit.replace("\n","") + "-->" + "SendStatus: " + (sendstatus == VI_SUCCESS ? "Success": ("error code--"+QString::number(sendstatus))));
+	emit hasSendCommandToInstrumentRet(commandstremit.replace("\n", ""), sendstatus);
 	return sendstatus == VI_SUCCESS;
 }

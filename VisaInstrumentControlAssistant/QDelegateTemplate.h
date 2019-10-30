@@ -39,6 +39,10 @@ private:
 	EDITORDATAOPFUNCTION	m_editorDataOpFunction  = {nullptr};
 
 };
+//extern QDelegateTemplate<QLineEdit>;
+//extern QDelegateTemplate<QComboBox>;
+//extern QDelegateTemplate<QPushButton>;
 template QDelegateTemplate<QLineEdit>;
 template QDelegateTemplate<QComboBox>;
 template QDelegateTemplate<QPushButton>;
+template QDelegateTemplate<QTextEdit>;

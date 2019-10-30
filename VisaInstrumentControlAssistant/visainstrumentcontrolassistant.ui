@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>840</width>
-    <height>677</height>
+    <width>911</width>
+    <height>739</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>VisaInstrumentControlAssistant</string>
+   <string>Instrument Control Assistant</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout_4">
@@ -31,8 +31,36 @@
         <property name="title">
          <string>Command Display</string>
         </property>
-        <layout class="QGridLayout" name="gridLayout_3" columnstretch="0">
+        <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
+          <layout class="QHBoxLayout" name="horizontalLayout_3">
+           <item>
+            <spacer name="horizontalSpacer_2">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>40</width>
+               <height>20</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="QPushButton" name="pushButton_clean">
+             <property name="text">
+              <string/>
+             </property>
+             <property name="icon">
+              <iconset resource="visainstrumentcontrolassistant.qrc">
+               <normaloff>:/Icon/Resource/clean up.png</normaloff>:/Icon/Resource/clean up.png</iconset>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="1" column="0">
           <widget class="QTextBrowser" name="textBrowser_commanddisplay"/>
          </item>
         </layout>
@@ -114,6 +142,19 @@
                   </size>
                  </property>
                 </spacer>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_autosend">
+                 <property name="text">
+                  <string>Auto Send</string>
+                 </property>
+                 <property name="autoRepeat">
+                  <bool>true</bool>
+                 </property>
+                 <property name="autoRepeatDelay">
+                  <number>100</number>
+                 </property>
+                </widget>
                </item>
                <item>
                 <widget class="QPushButton" name="pushButton_send">
@@ -198,7 +239,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>840</width>
+     <width>911</width>
      <height>21</height>
     </rect>
    </property>

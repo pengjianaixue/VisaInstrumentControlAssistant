@@ -6,15 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>840</width>
-    <height>418</height>
+    <width>884</width>
+    <height>415</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Instrument Configuration</string>
   </property>
   <property name="windowIcon">
-   <iconset theme="windwosvista"/>
+   <iconset theme="windwosvista">
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>
