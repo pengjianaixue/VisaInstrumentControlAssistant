@@ -16,6 +16,12 @@ VisaControl::~VisaControl()
 	}
 }
 
+bool VisaControl::IsConnect() const
+{
+
+	return m_viOpenFlag;
+}
+
 QString VisaControl::readResponseFromInstrument()
 {
 
@@ -24,7 +30,7 @@ QString VisaControl::readResponseFromInstrument()
 	ViStatus readstatus  =  viRead(m_viSession, (ViPBuf)readbuf, 1024, &retlen);
 	if (!readstatus)
 	{
-		emit recveiveReponseFromInstrument(QString(std::string(readbuf).c_str()));
+		emit hasRecveiveReponseFromInstrument(QString(std::string(readbuf).c_str()));
 		return QString(std::string(readbuf).c_str());
 	}
 	else if (readstatus == VI_ERROR_TMO)
@@ -66,6 +72,8 @@ bool VisaControl::setVisaTimeOutVaule(unsigned int ms)
 }
 
 
+
+
 bool VisaControl::openInstrumentRM()
 {
 	ViStatus openstatus = viOpenDefaultRM(&m_viSessionRM);
@@ -75,5 +83,6 @@ bool VisaControl::openInstrumentRM()
 bool VisaControl::sendCmdToInstrument(const QString &commandstr)
 {
 	ViStatus sendstatus  = viPrintf(m_viSession, const_cast<ViRsrc>(commandstr.toStdString().c_str()));
+	emit hasSendCommandToInstrument(commandstr + "SendStatus: " + (sendstatus == VI_SUCCESS ? "Success": ("error code--"+QString::number(sendstatus))));
 	return sendstatus == VI_SUCCESS;
 }

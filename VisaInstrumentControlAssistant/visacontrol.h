@@ -6,15 +6,17 @@ class VisaControl : public QObject
 {
 	Q_OBJECT
 public:
-	VisaControl(QObject *parent);
+	explicit VisaControl(QObject *parent = nullptr);
 	~VisaControl();
+	bool IsConnect() const;
 public slots:
 	bool sendCmdToInstrument(const QString &commandstr);
 	QString readResponseFromInstrument();
 	bool openInstrument(const QString &instrumentConncetStr);
 	bool setVisaTimeOutVaule(unsigned int ms);
 signals:
-	void recveiveReponseFromInstrument(const QString &);
+	void hasRecveiveReponseFromInstrument(const QString &);
+	void hasSendCommandToInstrument(const QString &);
 private:
 	bool openInstrumentRM();
 private:

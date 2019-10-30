@@ -14,8 +14,13 @@ public:
 private:
 	void uiInit();
 	bool connectSlots();
+private slots:
+	bool sendCommandToDevice();
+	bool readFromDevice();
 private:
 	Ui::VisaInstrumentControlAssistantClass ui;
 	instrumentconfiguration					*m_uiInstrumentDialog;
+	VisaControl								m_visaControl;
+
 
 };

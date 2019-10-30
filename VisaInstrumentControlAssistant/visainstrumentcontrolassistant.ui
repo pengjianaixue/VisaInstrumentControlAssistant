@@ -33,7 +33,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout_3" columnstretch="0">
          <item row="0" column="0">
-          <widget class="QTextBrowser" name="textBrowser"/>
+          <widget class="QTextBrowser" name="textBrowser_commanddisplay"/>
          </item>
         </layout>
        </widget>
@@ -43,7 +43,7 @@
         </property>
         <layout class="QGridLayout" name="gridLayout">
          <item row="0" column="0">
-          <widget class="QListView" name="listView"/>
+          <widget class="QListView" name="listView_histroy"/>
          </item>
         </layout>
        </widget>
@@ -77,7 +77,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QComboBox" name="comboBox"/>
+                <widget class="QComboBox" name="comboBox_instrumentname"/>
                </item>
                <item>
                 <widget class="QLabel" name="label_2">
@@ -96,7 +96,7 @@
                 </widget>
                </item>
                <item>
-                <widget class="QLineEdit" name="lineEdit"/>
+                <widget class="QLineEdit" name="lineEdit_command"/>
                </item>
               </layout>
              </item>
@@ -116,7 +116,7 @@
                 </spacer>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_3">
+                <widget class="QPushButton" name="pushButton_send">
                  <property name="text">
                   <string>Send</string>
                  </property>
@@ -129,7 +129,33 @@
                 </widget>
                </item>
                <item>
-                <widget class="QPushButton" name="pushButton_2">
+                <widget class="QPushButton" name="pushButton_read">
+                 <property name="text">
+                  <string>Read</string>
+                 </property>
+                 <property name="autoRepeat">
+                  <bool>true</bool>
+                 </property>
+                 <property name="autoRepeatDelay">
+                  <number>100</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_sendandread">
+                 <property name="text">
+                  <string>SendAndRead</string>
+                 </property>
+                 <property name="autoRepeat">
+                  <bool>true</bool>
+                 </property>
+                 <property name="autoRepeatDelay">
+                  <number>100</number>
+                 </property>
+                </widget>
+               </item>
+               <item>
+                <widget class="QPushButton" name="pushButton_cancel">
                  <property name="text">
                   <string>Cancel</string>
                  </property>
