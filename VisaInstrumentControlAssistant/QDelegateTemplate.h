@@ -15,8 +15,10 @@ public:
 		SETEDITORDATA,
 		SETMODELDATA
 	};
-	using EDITORSETFUNCTION		= std::function<void(ET *,const int& ,const int&)> ; // sample void(QComboBox *delegatecombox,int row,int column)
-	using EDITORDATAOPFUNCTION  = std::function<QVariant(ET *, QVariant,  DATAOPTYPE)>;			 // sample void(QComboBox *delegatecombox, QVariant modeldata,DATAOPTYPE )
+	// sample void(QWidget *parent,QComboBox *delegatecombox,int row,int column)
+	using EDITORSETFUNCTION		= std::function<void(QWidget *,ET *,const int& ,const int&)> ; 
+	// sample void(QComboBox *delegatecombox, QVariant modeldata,DATAOPTYPE )
+	using EDITORDATAOPFUNCTION  = std::function<QVariant(ET *, QVariant,  DATAOPTYPE)>;			
 	//Q_OBJECT
 //   override API 
 public:

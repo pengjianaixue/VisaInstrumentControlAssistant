@@ -18,8 +18,8 @@ QWidget * QDelegateTemplate<ET>::createEditor(QWidget *parent, const QStyleOptio
 	const QModelIndex &index) const
 {
 	ET *editor = new ET(parent);
-	qDebug() << typeid(ET*).name();
-	m_editorSetFunction(editor, index.row(), index.column());
+	//qDebug() << typeid(ET*).name();
+	m_editorSetFunction(parent,editor, index.row(), index.column());
 	return (QWidget*)editor;
 }
 template <typename	ET>
@@ -27,7 +27,7 @@ void QDelegateTemplate<ET>::setEditorData(QWidget *editor, const QModelIndex &in
 {
 	QString value = index.model()->data(index, Qt::EditRole).toString();
 	ET *Editor = static_cast<ET*>(editor);
-	qDebug() << typeid(Editor).name();
+	//qDebug() << typeid(Editor).name();
 	if (m_editorDataOpFunction)
 	{
 		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA);

@@ -1,14 +1,23 @@
 #pragma once
 
 #include <QObject>
+#include <functional>
 #include ".\VisaLib\include\visa.h"
 class VisaControl : public QObject
 {
 	Q_OBJECT
 public:
+	enum EventType
+	{
+		Event_IO_Completion,
+		Event_Exception
+
+	};
+	using VIEVENTHANDLERFN = ViHndlr;
 	explicit VisaControl(QObject *parent = nullptr);
 	~VisaControl();
 	bool IsConnect() const;
+	bool registerVisaEventCallBackFn(VIEVENTHANDLERFN eventhandlerfunction, EventType eventtype);
 public slots:
 	bool sendCommandToInstrument(const QString &commandstr);
 	QString readResponseFromInstrument();

@@ -2,6 +2,7 @@
 
 #include <QDialog>
 #include <memory>
+#include <map>
 #include "ui_instrumentconfiguration.h"
 #include "QDelegateTemplate.h"
 #include "CommunicationAddressConfigure.h"
@@ -19,22 +20,25 @@ public:
 public slots:
 	void openConfigureForm();
 public:
-	static void comboxDelegateEditorSet(QComboBox *comboxdelegate, const int &row, const int &column);
+	static void comboxDelegateEditorSet(QWidget *parent,QComboBox *comboxdelegate, const int &row, const int &column);
 	static QVariant delegateComboxDataOp(QComboBox *comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype);
+	static QStringList	getDeviceProtocolChoose(const QString &DeviceIndex);
 private:
-	void initUi();
+	void init();
 	bool conncetSlots();
 	QToolButton *getQToolButtonCellWidget();
-	//QWidget     *getQCheckBoxCellWidget();
-	QCheckBox   *getQCheckBoxCellWidget();
+	QWidget     *getQCheckBoxCellWidget();
+	
+	//QCheckBox   *getQCheckBoxCellWidget();
 
 private:
 	Ui::instrumentconfiguration ui;
 	//std::shared_ptr<QPushButtonDelegate>		m_qPushButtonDelegateForDeviceConfig;
-	QLineEditDelegate				m_qLineEditDelegateForDeviceName;
-	QLineEditDelegate				m_qLineEditDelegateForDeviceConnectInfor;
-	QComboBoxDelegate				m_qComboBoxDelegateForDeviceType;
-	QComboBoxDelegate				m_qComboBoxDelegateForDeviceProtocol;
-	QPushButtonDelegate				m_qPushButtonDelegateForDeviceConfig;
-	CommunicationAddressConfigure	*m_communicationAddressConfigureform = {nullptr};
+	QLineEditDelegate						m_qLineEditDelegateForDeviceName;
+	QLineEditDelegate						m_qLineEditDelegateForDeviceConnectInfor;
+	QComboBoxDelegate						m_qComboBoxDelegateForDeviceType;
+	QComboBoxDelegate						m_qComboBoxDelegateForDeviceProtocol;
+	QPushButtonDelegate						m_qPushButtonDelegateForDeviceConfig;
+	CommunicationAddressConfigure			*m_communicationAddressConfigureform = {nullptr};
+	static std::map<QString, int>			m_deciveTypeMapToIndex;
 };

@@ -22,9 +22,32 @@ bool VisaControl::IsConnect() const
 	return m_viOpenFlag;
 }
 
+bool VisaControl::registerVisaEventCallBackFn(VIEVENTHANDLERFN eventhandlerfunction, EventType eventtype)
+{
+	if (!eventhandlerfunction)
+	{
+		return false;
+	}
+	int vi_eventype = 0;
+	if (eventtype == EventType::Event_IO_Completion)
+	{
+		vi_eventype = VI_EVENT_IO_COMPLETION;
+	}
+	else
+	{
+		vi_eventype = VI_EVENT_EXCEPTION;
+	}
+	if (VI_SUCCESS == viInstallHandler(m_viSession, vi_eventype, eventhandlerfunction, nullptr))
+	{
+		viEnableEvent(m_viSession, vi_eventype, VI_HNDLR,VI_NULL);
+		return true;
+	}
+	return false;
+}
+
 QString VisaControl::readResponseFromInstrument()
 {
-
+	
 	char readbuf[1024] = { 0 };
 	ViUInt32  retlen = 0;
 	ViStatus readstatus  =  viRead(m_viSession, (ViPBuf)readbuf, 1024, &retlen);

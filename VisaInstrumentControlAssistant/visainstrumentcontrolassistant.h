@@ -12,6 +12,8 @@ class VisaInstrumentControlAssistant : public QMainWindow
 public:
 	VisaInstrumentControlAssistant(QWidget *parent = Q_NULLPTR);
 	~VisaInstrumentControlAssistant();
+protected:
+	bool eventFilter(QObject *target,QEvent *event) override;
 private:
 	void uiInit();
 	bool connectSlots();
@@ -21,10 +23,11 @@ private slots:
 	void readFromDevice();
 	void sendCommandAndReadResponseFromDevice();
 	void autoSend();
+	void addToHistroyList(const QString &commandstr);
 signals:
 	bool s_sendCommandToDevice(const QString &commandstr);
-	bool s_readFromDevice();
-	bool s_sendCommandAndReadResponseFromDevice(const QString &commandstr);
+	QString s_readFromDevice();
+	QString s_sendCommandAndReadResponseFromDevice(const QString &commandstr);
 private:
 	Ui::VisaInstrumentControlAssistantClass ui;
 	instrumentconfiguration					*m_uiInstrumentDialog;
