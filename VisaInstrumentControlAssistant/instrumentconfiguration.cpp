@@ -88,7 +88,7 @@ void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox
 				comboxdelegate->clear();
 				for (const auto &item: instrumentInforlist)
 				{
-					QString DisplayStr = item.connectStr;
+					QString DisplayStr = item.manufacturer + "::" + item.model;
 					comboxdelegate->addItem(DisplayStr);
 				}
 			}
