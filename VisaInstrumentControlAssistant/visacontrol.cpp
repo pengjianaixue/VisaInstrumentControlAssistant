@@ -110,13 +110,96 @@ bool VisaControl::setVisaTimeOutVaule(unsigned int ms)
 	return viSetAttribute(m_viSession, VI_ATTR_TMO_VALUE, ms) == 0;
 }
 
+bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType protocoltype, std::list<InstrumentInfor> &instrumentfindlist)
+{
+	ViFindList vifindlist = 0;
+	ViUInt32   virecnt = 0;
+	ViSession viseeionfind;
+	ViSession viseeioninstrument;
+	ViChar    desc[1024] = {0};
+	ViChar	  instrumentinfor[256] = { 0 };
+	//QList<std::pair<QString, QString>> instrumentfindlist;
+	InstrumentInfor instrumentinforstruct;
+	QString manufacturer;
+	QString model;
+	QString connectStr;
+	ViStatus openstatus = viOpenDefaultRM(&viseeionfind);
+	if (openstatus != VI_SUCCESS)
+	{
+		return false;
+	}
+	ViStatus findret = viFindRsrc(viseeionfind, const_cast<ViString>(getInstrumentFindExpr(instrumenttype, protocoltype).toStdString().c_str()), 
+		&vifindlist, &virecnt, desc);
+	if (findret != VI_SUCCESS)
+	{
+		return false;
+	}
+	for (size_t i = 0; i < virecnt; i++)
+	{
+		ViStatus IOstatus = viOpen(viseeionfind, desc, VI_NULL, VI_NULL, &viseeioninstrument);
+		if (IOstatus != VI_SUCCESS)
+		{
+			viFindNext(vifindlist, desc);
+			continue;
+		}
+		ViUInt32 cnt = 256;
+		ViPUInt32 recnt = 0;
+		IOstatus = viPrintf(viseeioninstrument, "*IDN?\n");
+		IOstatus = viRead(viseeioninstrument, (ViPBuf)instrumentinfor, cnt, recnt);
+		//IOstatus = viQueryf(viseeioninstrument,"*IDN?\n","%s", instrumentinfor);
+		if (IOstatus == VI_SUCCESS)
+		{
+			QString querystr = instrumentinfor;
+			if (querystr.split(",").length() > 2)
+			{
+				instrumentinforstruct.manufacturer = querystr.split(",").at(0);
+				instrumentinforstruct.model = querystr.split(",").at(1);
+				instrumentinforstruct.connectStr = desc;
+				instrumentfindlist.push_back(instrumentinforstruct);
+			}
+		}
+		viClose(viseeioninstrument);
+		viFindNext(vifindlist, desc);
+	}
 
-
-
+}
 bool VisaControl::openInstrumentRM()
 {
 	ViStatus openstatus = viOpenDefaultRM(&m_viSessionRM);
 	return openstatus == VI_SUCCESS;
+}
+
+QString VisaControl::getInstrumentFindExpr(InstrumentType instrumenttype, ProtocolType protocoltype)
+{
+	QString findexpr;
+	switch (instrumenttype)
+	{
+		case VisaControl::SG:
+			break;
+		case VisaControl::SA:
+			break;
+		case VisaControl::NA:
+			break;
+		case VisaControl::PRM:
+			break;
+		default:
+			break;
+	}
+	switch (protocoltype)
+	{
+		case VisaControl::TCP_IP:
+			findexpr = "TCPIP0?*::INSTR";
+			break;
+		case VisaControl::GPIB:
+			findexpr = "GPIB[0-9]*::?*INSTR";
+			break;
+		case VisaControl::COM:
+			findexpr = "ASRL[0-9]*::?*INSTR";
+			break;
+		default:
+			break;
+	}
+	return findexpr;
 }
 
 bool VisaControl::sendCommandToInstrument(const QString &commandstr)
