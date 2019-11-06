@@ -37,6 +37,14 @@ public:
 		{
 
 		}
+		/*QString getConncetStr(const QString &instrumentModel) 
+		{
+			if (instrumentModel == manufacturer + "::" + model)
+			{
+				return connectStr;
+			}
+			return QString();
+		}*/
 	};
 	using VIEVENTHANDLERFN = ViHndlr;
 	explicit VisaControl(QObject *parent = nullptr);

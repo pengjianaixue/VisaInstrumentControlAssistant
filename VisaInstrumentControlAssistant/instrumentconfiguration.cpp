@@ -1,6 +1,9 @@
 #include "stdafx.h"
 #include "instrumentconfiguration.h"
-std::map<QString, int>	instrumentconfiguration::static_deciveTypeMapToIndex;
+
+//static member dec
+//std::map<QString, int>	instrumentconfiguration::static_deciveTypeMapToIndex;
+//std::list<VisaControl::InstrumentInfor> instrumentconfiguration::static_instrumentInforlist;
 instrumentconfiguration::instrumentconfiguration(QWidget *parent)
 	: QDialog(parent), m_communicationAddressConfigureform(new CommunicationAddressConfigure(this))
 	
@@ -48,6 +51,18 @@ void instrumentconfiguration::openConfigureForm()
 	
 }
 
+void instrumentconfiguration::setConncetStrInfor(const QString &instrumentmodel)
+{
+	auto instrumentinforlist = instrumentmodel.split("->");
+	if (instrumentinforlist.length() == 3)
+	{
+		int row = this->ui.tableWidget->currentRow();
+		this->ui.tableWidget->setItem(this->ui.tableWidget->currentRow(), 5, new QTableWidgetItem(instrumentinforlist.at(0) + "::" + instrumentinforlist.at(1)));
+		m_connectStr = instrumentinforlist.at(2);
+		//this->ui.tableWidget->setItem(this->ui.tableWidget->currentRow(), 3, new QTableWidgetItem(instrumentinforlist.at(2)));		
+	}
+}
+
 void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox *comboxdelegate, const int &row, const int &column)
 {
 
@@ -80,71 +95,76 @@ void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox
 		{
 			QString devicetype   = static_cast<QTableWidget*>(parent->parent())->item(row, 1)->text();
 			QString ProtocolType = static_cast<QTableWidget*>(parent->parent())->item(row, 2)->text();
-			if (static_deciveTypeMapToIndex[devicetype] <= 2)
+			if (m_deciveTypeMapToIndex[devicetype] <= 2)
 			{
-				std::list<VisaControl::InstrumentInfor> instrumentInforlist;
+				m_instrumentInforlist.clear();
 				VisaControl visaControl;
-				visaControl.findInstrument((VisaControl::InstrumentType)static_deciveTypeMapToIndex[devicetype], getProtocolTypefromProtocolName(ProtocolType),instrumentInforlist);
+				visaControl.findInstrument((VisaControl::InstrumentType)m_deciveTypeMapToIndex[devicetype], getProtocolTypefromProtocolName(ProtocolType), m_instrumentInforlist);
 				comboxdelegate->clear();
-				for (const auto &item: instrumentInforlist)
+				for (const auto &item: m_instrumentInforlist)
 				{
-					QString DisplayStr = item.manufacturer + "::" + item.model;
+					QString DisplayStr = item.manufacturer + "->" + item.model + "->" + item.connectStr;
 					comboxdelegate->addItem(DisplayStr);
 				}
+				//connect(comboxdelegate, &QComboBox::currentTextChanged, this, &instrumentconfiguration::setConncetStrInfor);
+				// use the function param to specil the function
+				connect(comboxdelegate, SIGNAL(activated(const QString&)), this, SLOT(setConncetStrInfor(const QString &))); 
 			}
 		}
 	}
 	comboxdelegate->setStyle(QStyleFactory::create("windowsvista"));
 	comboxdelegate->setStyleSheet("background - color:rgba(193, 205, 205)");
 }
-/// JUST FOR TEST
+
 // This function register to the QDelegateTemplate class to setModel data or SetEditorData;
-QVariant instrumentconfiguration::delegateComboxDataOp(QComboBox * comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype)
+QVariant instrumentconfiguration::delegateComboxDataOp(QComboBox * comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype, const QModelIndex &index)
 {
-	if (dateoptype == QComboBoxDelegate::DATAOPTYPE::SETEDITORDATA)
+	if (dateoptype == QComboBoxDelegate::DATAOPTYPE::SETMODELDATA )
 	{
-		comboxdelegate->setCurrentText(modeldata.toString() + "callback" );
-		return QVariant();
+		if (index.column() != 3)
+		{
+			return comboxdelegate->currentText();
+		}		
 	}
-	else
-	{
-		QVariant editordata = comboxdelegate->currentText() + "callback";
-		return editordata;
-	}
+	return QVariant(m_connectStr);
 }
 
 void instrumentconfiguration::init()
 {
 	this->ui.tableWidget->setColumnCount(6);
-	this->ui.tableWidget->setRowCount(1);
+	this->ui.tableWidget->setRowCount(2);
 	QStringList headerLables;
 	headerLables << "Enable" << "Instrument Type" << "Protocol"<<"Conncet Information String "<<"configure button"<<"Instrument Name";
 	this->ui.tableWidget->setHorizontalHeaderLabels(headerLables);
 	this->ui.tableWidget->setItemDelegateForColumn(1, &m_qComboBoxDelegateForDeviceType);
 	this->ui.tableWidget->setItemDelegateForColumn(2, &m_qComboBoxDelegateForDeviceProtocol);
 	this->ui.tableWidget->setItemDelegateForColumn(3, &m_qComboBoxDelegateForDeviceConnectInfor);
-	m_qComboBoxDelegateForDeviceProtocol.registerEditorSetFunction(std::forward<QComboBoxDelegate::EDITORSETFUNCTION>(&comboxDelegateEditorSet));
-	m_qComboBoxDelegateForDeviceType.registerEditorSetFunction(std::forward<QComboBoxDelegate::EDITORSETFUNCTION>(&comboxDelegateEditorSet));
-	m_qComboBoxDelegateForDeviceConnectInfor.registerEditorSetFunction(std::forward<QComboBoxDelegate::EDITORSETFUNCTION>(&comboxDelegateEditorSet));
-
-	//register to function the QDelegateTemplate class to setModel data or SetEditorData;
-	/*m_qComboBoxDelegateForDeviceProtocol.registerEditorDataOperationFunction(delegateComboxDataOp);
-	m_qComboBoxDelegateForDeviceType.registerEditorDataOperationFunction(delegateComboxDataOp);*/
-	
+	m_qComboBoxDelegateForDeviceProtocol.registerEditorSetFunction(std::bind(&instrumentconfiguration::comboxDelegateEditorSet,this,std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+	m_qComboBoxDelegateForDeviceType.registerEditorSetFunction(std::bind(&instrumentconfiguration::comboxDelegateEditorSet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+	m_qComboBoxDelegateForDeviceConnectInfor.registerEditorSetFunction(std::bind(&instrumentconfiguration::comboxDelegateEditorSet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
+	m_qComboBoxDelegateForDeviceConnectInfor.registerEditorDataOperationFunction(std::bind(&instrumentconfiguration::delegateComboxDataOp, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));	
 	this->ui.tableWidget->setCellWidget(0, 4, getQToolButtonCellWidget());
 	this->ui.tableWidget->setCellWidget(0, 0, getQCheckBoxCellWidget());
 	this->ui.tableWidget->setColumnWidth(0, 50);
-	this->ui.tableWidget->setColumnWidth(3, 300);
-	this->ui.tableWidget->setColumnWidth(4, 120);
+	this->ui.tableWidget->setColumnWidth(2, 70);
+	this->ui.tableWidget->setColumnWidth(3, 400);
+	this->ui.tableWidget->setColumnWidth(4, 100);
+	this->ui.tableWidget->setColumnWidth(5, 150);
 	this->ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	this->ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
+	/*QTableWidgetItem *addrow = new QTableWidgetItem();
+	addrow->setIcon(QIcon(":/Icon/Resource/add.png"));
+	this->ui.tableWidget->setVerticalHeaderItem(1, addrow);*/
+	//this->ui.tableWidget->setSpan(1, 0, 1, 5);
+	//this->ui.tableWidget->setRowHidden(1, true);
+	//this->ui.tableWidget->setFrameShape(QFrame::NoFrame);
 	//this->ui.tableWidget->setStyle(QStyleFactory::create("Fusion"));
-	static_deciveTypeMapToIndex.clear();
-	static_deciveTypeMapToIndex.insert({ "SG_Device",0 });
-	static_deciveTypeMapToIndex.insert({ "SA_Device",1 });
-	static_deciveTypeMapToIndex.insert({ "RFBox_Device",2 });
-	static_deciveTypeMapToIndex.insert({ "RU_Device",3 });
-	static_deciveTypeMapToIndex.insert({ "Common_Device",4 });
+	m_deciveTypeMapToIndex.clear();
+	m_deciveTypeMapToIndex.insert({ "SG_Device",0 });
+	m_deciveTypeMapToIndex.insert({ "SA_Device",1 });
+	m_deciveTypeMapToIndex.insert({ "RFBox_Device",2 });
+	m_deciveTypeMapToIndex.insert({ "RU_Device",3 });
+	m_deciveTypeMapToIndex.insert({ "Common_Device",4 });
 	
 }
 
@@ -202,7 +222,7 @@ VisaControl::ProtocolType instrumentconfiguration::getProtocolTypefromProtocolNa
 QStringList instrumentconfiguration::getDeviceProtocolChoose(const QString &deviceIndex)
 {
 
-	switch (static_deciveTypeMapToIndex[deviceIndex])
+	switch (m_deciveTypeMapToIndex[deviceIndex])
 	{
 		case 0:
 		case 1:

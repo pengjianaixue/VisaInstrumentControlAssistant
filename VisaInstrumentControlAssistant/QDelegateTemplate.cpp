@@ -32,7 +32,7 @@ void QDelegateTemplate<ET>::setEditorData(QWidget *editor, const QModelIndex &in
 	{
 		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA);
 	}
-	else
+	/*else
 	{
 		if (typeid(Editor) == typeid(QComboBox*))
 		{
@@ -46,10 +46,65 @@ void QDelegateTemplate<ET>::setEditorData(QWidget *editor, const QModelIndex &in
 		{
 			((QTextEdit*)Editor)->setText(value);
 		}
-	}
+	}*/
 	
 	
 }
+
+
+//specialization 
+template<>
+void QDelegateTemplate<QComboBox>::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+	QString value = index.model()->data(index, Qt::EditRole).toString();
+	QComboBox *Editor = static_cast<QComboBox*>(editor);
+	if (m_editorDataOpFunction)
+	{
+		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA, index);
+	}
+	Editor->setCurrentText(value);
+}
+
+//specialization 
+template<>
+void QDelegateTemplate<QLineEdit>::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+	QString value = index.model()->data(index, Qt::EditRole).toString();
+	QLineEdit *Editor = static_cast<QLineEdit*>(editor);
+	if (m_editorDataOpFunction)
+	{
+		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA, index);
+	}
+	Editor->setText(value);
+}
+
+//specialization 
+template<>
+void QDelegateTemplate<QTextEdit>::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+	QString value = index.model()->data(index, Qt::EditRole).toString();
+	QTextEdit *Editor = static_cast<QTextEdit*>(editor);
+	if (m_editorDataOpFunction)
+	{
+		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA, index);
+	}
+	Editor->setText(value);
+}
+
+//specialization 
+template<>
+void QDelegateTemplate<QPushButton>::setEditorData(QWidget *editor, const QModelIndex &index) const
+{
+	QString value = index.model()->data(index, Qt::EditRole).toString();
+	QPushButton *Editor = static_cast<QPushButton*>(editor);
+	if (m_editorDataOpFunction)
+	{
+		m_editorDataOpFunction(Editor, value, DATAOPTYPE::SETEDITORDATA, index);
+	}
+	Editor->setText(value);
+}
+
+
 template <typename	ET>
 void QDelegateTemplate<ET>::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
 {
@@ -59,7 +114,7 @@ void QDelegateTemplate<ET>::setModelData(QWidget *editor, QAbstractItemModel *mo
 	{
 		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA);
 	}
-	else
+	/*else
 	{
 		if (typeid(internaleEditor) == typeid(QTextEdit*))
 		{
@@ -73,9 +128,62 @@ void QDelegateTemplate<ET>::setModelData(QWidget *editor, QAbstractItemModel *mo
 		{
 			value = ((QComboBox*)(internaleEditor))->currentText();
 		}
+	}*/
+	model->setData(index, value, Qt::EditRole);
+}
+//specialization 
+template <>
+void QDelegateTemplate<QComboBox>::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+	QComboBox *internaleEditor = static_cast<QComboBox*>(editor);
+	QVariant value = internaleEditor->currentText();
+	if (m_editorDataOpFunction)
+	{
+		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA, index);
 	}
 	model->setData(index, value, Qt::EditRole);
 }
+//specialization 
+template <>
+void QDelegateTemplate<QLineEdit>::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+	QLineEdit *internaleEditor = static_cast<QLineEdit*>(editor);
+	QVariant value = internaleEditor->text();
+	if (m_editorDataOpFunction)
+	{
+		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA, index);
+	}
+	model->setData(index, value, Qt::EditRole);
+
+}
+
+//specialization 
+template <>
+void QDelegateTemplate<QTextEdit>::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+	QTextEdit *internaleEditor = static_cast<QTextEdit*>(editor);
+	QVariant value = internaleEditor->toPlainText();
+	if (m_editorDataOpFunction)
+	{
+		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA, index);
+	}
+	model->setData(index, value, Qt::EditRole);
+
+}
+
+//specialization 
+template <>
+void QDelegateTemplate<QPushButton>::setModelData(QWidget *editor, QAbstractItemModel *model, const QModelIndex &index) const
+{
+	QPushButton *internaleEditor = static_cast<QPushButton*>(editor);
+	QVariant value = internaleEditor->text();
+	if (m_editorDataOpFunction)
+	{
+		value = m_editorDataOpFunction(internaleEditor, QVariant(), DATAOPTYPE::SETMODELDATA, index);
+	}
+	model->setData(index, value, Qt::EditRole);
+}
+
 template <typename	ET>
 void QDelegateTemplate<ET>::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
@@ -99,6 +207,11 @@ void QDelegateTemplate<ET>::registerEditorDataOperationFunction(EDITORDATAOPFUNC
 		m_editorDataOpFunction = editorDataOpFunction;
 	}
 }
+
+template class QDelegateTemplate<QLineEdit>;
+template class QDelegateTemplate<QComboBox>;
+template class QDelegateTemplate<QPushButton>;
+template class QDelegateTemplate<QTextEdit>;
 
 
 

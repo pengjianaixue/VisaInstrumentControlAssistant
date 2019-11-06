@@ -10,5 +10,6 @@
         <file>Resource/checkbox_checked.png</file>
         <file>Resource/checkbox_checked_disabled.png</file>
         <file>Resource/checkbox_checked_focus.png</file>
+        <file>Resource/add.png</file>
     </qresource>
 </RCC>

@@ -7,6 +7,11 @@
 #include "QDelegateTemplate.h"
 #include "CommunicationAddressConfigure.h"
 #include "visacontrol.h"
+using namespace std::placeholders;
+extern template class QDelegateTemplate<QLineEdit>;
+extern template class QDelegateTemplate<QComboBox>;
+extern template class QDelegateTemplate<QPushButton>;
+extern template class QDelegateTemplate<QTextEdit>;
 
 class instrumentconfiguration : public QDialog
 {
@@ -20,18 +25,19 @@ public:
 	using QPushButtonDelegate = QDelegateTemplate<QPushButton>;
 public slots:
 	void openConfigureForm();
-public:
-	static void comboxDelegateEditorSet(QWidget *parent,QComboBox *comboxdelegate, const int &row, const int &column);
-	static QVariant delegateComboxDataOp(QComboBox *comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype);
-	
+	void setConncetStrInfor(const QString &instrumentmodel);
+//public:
+//	
+//	
 private:
 	void init();
 	bool conncetSlots();
 	QToolButton *getQToolButtonCellWidget();
 	QWidget     *getQCheckBoxCellWidget();
-	static VisaControl::ProtocolType  getProtocolTypefromProtocolName(const QString &protocolname);
-	static QStringList	getDeviceProtocolChoose(const QString &deviceIndex);
-	
+	VisaControl::ProtocolType  getProtocolTypefromProtocolName(const QString &protocolname);
+	QStringList	getDeviceProtocolChoose(const QString &deviceIndex);
+	void comboxDelegateEditorSet(QWidget *parent, QComboBox *comboxdelegate, const int &row, const int &column);
+	QVariant delegateComboxDataOp(QComboBox *comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype,const QModelIndex &index);
 	//QCheckBox   *getQCheckBoxCellWidget();
 
 private:
@@ -43,6 +49,8 @@ private:
 	QComboBoxDelegate						m_qComboBoxDelegateForDeviceProtocol;
 	QPushButtonDelegate						m_qPushButtonDelegateForDeviceConfig;
 	CommunicationAddressConfigure			*m_communicationAddressConfigureform = {nullptr};
-	static std::map<QString, int>			static_deciveTypeMapToIndex;
+	std::map<QString, int>					m_deciveTypeMapToIndex;
+	std::list<VisaControl::InstrumentInfor> m_instrumentInforlist;
+	QString									m_connectStr;
 	//VisaControl								m_visaControl;
 };

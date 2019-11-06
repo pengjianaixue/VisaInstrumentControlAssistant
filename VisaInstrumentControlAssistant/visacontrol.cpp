@@ -58,9 +58,11 @@ QString VisaControl::readResponseFromInstrument()
 	}
 	else if (readstatus == VI_ERROR_TMO)
 	{
-		return QString("read time out");
+		emit hasRecveiveReponseFromInstrument(QString("read time out"));
+		return QString();
 	}
-	return QString("read fail");
+	emit hasRecveiveReponseFromInstrument(QString("read fail"));
+	return QString();
 	
 }
 
@@ -136,6 +138,7 @@ bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType pro
 	}
 	for (size_t i = 0; i < virecnt; i++)
 	{
+		ZeroMemory(instrumentinfor, 256);
 		ViStatus IOstatus = viOpen(viseeionfind, desc, VI_NULL, VI_NULL, &viseeioninstrument);
 		if (IOstatus != VI_SUCCESS)
 		{
@@ -143,9 +146,15 @@ bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType pro
 			continue;
 		}
 		ViUInt32 cnt = 256;
-		ViPUInt32 recnt = 0;
+		ViUInt32 recnt = 0;
 		IOstatus = viPrintf(viseeioninstrument, "*IDN?\n");
-		IOstatus = viRead(viseeioninstrument, (ViPBuf)instrumentinfor, cnt, recnt);
+		if (IOstatus != VI_SUCCESS)
+		{
+			viClose(viseeioninstrument);
+			viFindNext(vifindlist, desc);
+			continue;
+		}
+		IOstatus = viRead(viseeioninstrument, (ViPBuf)instrumentinfor, cnt, &recnt);
 		//IOstatus = viQueryf(viseeioninstrument,"*IDN?\n","%s", instrumentinfor);
 		if (IOstatus == VI_SUCCESS)
 		{
@@ -153,8 +162,8 @@ bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType pro
 			if (querystr.split(",").length() > 2)
 			{
 				instrumentinforstruct.manufacturer = querystr.split(",").at(0);
-				instrumentinforstruct.model = querystr.split(",").at(1);
-				instrumentinforstruct.connectStr = desc;
+				instrumentinforstruct.model		   = querystr.split(",").at(1);
+				instrumentinforstruct.connectStr   = desc;
 				instrumentfindlist.push_back(instrumentinforstruct);
 			}
 		}
