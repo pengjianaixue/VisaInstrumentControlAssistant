@@ -242,7 +242,7 @@ void instrumentconfiguration::init()
 	this->ui.tableWidget->setColumnCount(6);
 	this->ui.tableWidget->setRowCount(1);
 	QStringList headerLables;
-	headerLables << "Enable" << "Instrument Type" << "Protocol"<<"Conncet Information String "<<"configure button"<<"Instrument Name";
+	headerLables << "Enable" << "Instrument Type" << "Protocol"<<"Connect Information String "<<"configure"<<"Instrument Name";
 	this->ui.tableWidget->setHorizontalHeaderLabels(headerLables);
 	this->ui.tableWidget->setItemDelegateForColumn(1, &m_qComboBoxDelegateForDeviceType);
 	this->ui.tableWidget->setItemDelegateForColumn(2, &m_qComboBoxDelegateForDeviceProtocol);
