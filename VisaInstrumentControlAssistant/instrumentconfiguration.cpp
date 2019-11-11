@@ -24,11 +24,14 @@ instrumentconfiguration::~instrumentconfiguration()
 
 void instrumentconfiguration::openConfigureForm()
 {
-	if (this->ui.tableWidget->item(this->ui.tableWidget->currentRow(),2) 
-		&& !this->ui.tableWidget->item(this->ui.tableWidget->currentRow(), 2)->text().isEmpty()
+	QToolButton *act = qobject_cast<QToolButton*>(QObject::sender());
+	int row = act->property("row").toInt();
+	qDebug() << row;
+	if (this->ui.tableWidget->item(row,2)
+		&& !this->ui.tableWidget->item(row, 2)->text().isEmpty()
 		)
-	{
-		QString protocoltypename = this->ui.tableWidget->item(this->ui.tableWidget->currentRow(), 2)->text();
+	{  
+		QString protocoltypename = this->ui.tableWidget->item(row, 2)->text();
 		if (protocoltypename == "SSH" || protocoltypename == "Telnet")
 		{
 			protocoltypename = "SSH/Telnet";
@@ -39,7 +42,7 @@ void instrumentconfiguration::openConfigureForm()
 		}
 		else
 		{
-			protocoltypename = this->ui.tableWidget->item(this->ui.tableWidget->currentRow(), 2)->text();
+			protocoltypename = this->ui.tableWidget->item(row, 2)->text();
 		}
 		if(m_communicationAddressConfigureform->setCurrentTab(protocoltypename))
 			m_communicationAddressConfigureform->show();
@@ -59,8 +62,105 @@ void instrumentconfiguration::setConncetStrInfor(const QString &instrumentmodel)
 		int row = this->ui.tableWidget->currentRow();
 		this->ui.tableWidget->setItem(this->ui.tableWidget->currentRow(), 5, new QTableWidgetItem(instrumentinforlist.at(0) + "::" + instrumentinforlist.at(1)));
 		m_connectStr = instrumentinforlist.at(2);
+		//emit si_InsertNexRow();
 		//this->ui.tableWidget->setItem(this->ui.tableWidget->currentRow(), 3, new QTableWidgetItem(instrumentinforlist.at(2)));		
 	}
+}
+
+void instrumentconfiguration::checkAndInsertNextSetRow(QTableWidgetItem *item)
+{
+	if (item->column() == 5)
+	{
+		if (this->ui.tableWidget->rowCount() - 1 > item->row())
+		{
+			return;
+		}
+		else if (!item->text().isEmpty())
+		{
+
+			this->ui.tableWidget->insertRow(this->ui.tableWidget->rowCount());
+			initRow(this->ui.tableWidget->rowCount()-1);
+		}
+	}
+}
+
+void instrumentconfiguration::rowOperationMenu(const QPoint &pos)
+{
+	
+	int row = this->ui.tableWidget->indexAt(pos).row();
+	QMenu  popMenu(this->ui.tableWidget);
+	QList<QAction*> actionlist;
+	if (row < this->ui.tableWidget->rowCount() && row!=-1)
+	{
+		
+		QAction *deleterow = new QAction(tr("Delete this instrument"));
+		deleterow->setProperty("row", row);
+		deleterow->setIcon(QIcon(":/Icon/Resource/delete.png"));
+		connect(deleterow, &QAction::triggered, this, &instrumentconfiguration::deleteRow);
+		actionlist.append(deleterow);
+		popMenu.addActions(actionlist);
+		popMenu.exec(QCursor::pos());
+		return;
+	}
+	else
+	{
+		QAction *addrow = new QAction(tr("Add an instrument"));
+		addrow->setProperty("row", row);
+		addrow->setIcon(QIcon(":/Icon/Resource/add.png"));
+		connect(addrow, &QAction::triggered, this, &instrumentconfiguration::addRow);
+		actionlist.append(addrow);
+		popMenu.addActions(actionlist);
+		popMenu.exec(QCursor::pos());
+		return;
+	}
+
+}
+
+void instrumentconfiguration::deleteRow()
+{
+	QAction *act = qobject_cast<QAction*>(QObject::sender());
+	int row = act->property("row").toInt();
+	this->ui.tableWidget->removeRow(row);
+	if (this->ui.tableWidget->rowCount() == 0)
+	{
+		this->ui.tableWidget->insertRow(0);
+		initRow(0);
+	}
+
+}
+
+void instrumentconfiguration::addRow()
+{
+	
+	this->ui.tableWidget->insertRow(this->ui.tableWidget->rowCount());
+	initRow(this->ui.tableWidget->rowCount() - 1);
+}
+
+bool instrumentconfiguration::eventFilter(QObject *target, QEvent *event)
+{
+	/*if (target == this->ui.tableWidget && event->type() == QEvent::ContextMenu)
+	{
+		int height = this->ui.tableWidget->horizontalHeader()->height();
+		QPoint pth(0, height);
+		QPoint pt = this->ui.tableWidget->mapFromGlobal(QCursor::pos());
+		pt += pth;
+		QModelIndex index = this->ui.tableWidget->indexAt(pt);
+		qDebug() << index.row();
+		if (this->ui.tableWidget->indexAt(this->ui.tableWidget->mapFromGlobal(QCursor::pos())).row() <= this->ui.tableWidget->rowCount())
+		{
+			QMenu *popMenu = new QMenu(this);
+			popMenu->addAction(new QAction(tr("Delete this device")));
+			popMenu->exec(QCursor::pos());
+			return true;
+		}
+		return false;
+
+	}
+	else
+	{
+		return QWidget::eventFilter(target, event);
+	}*/
+	return  QWidget::eventFilter(target, event);;
 }
 
 void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox *comboxdelegate, const int &row, const int &column)
@@ -121,7 +221,7 @@ QVariant instrumentconfiguration::delegateComboxDataOp(QComboBox * comboxdelegat
 {
 	if (dateoptype == QComboBoxDelegate::DATAOPTYPE::SETMODELDATA )
 	{
-		if (index.column() != 3)
+		if (index.column() != 3)      
 		{
 			return comboxdelegate->currentText();
 		}		
@@ -129,10 +229,18 @@ QVariant instrumentconfiguration::delegateComboxDataOp(QComboBox * comboxdelegat
 	return QVariant(m_connectStr);
 }
 
+void instrumentconfiguration::initRow(int row)
+{
+	this->ui.tableWidget->setCellWidget(row, 4, getQToolButtonCellWidget(row));
+	this->ui.tableWidget->setCellWidget(row, 0, getQCheckBoxCellWidget(row));
+}
+
 void instrumentconfiguration::init()
 {
+	this->ui.tableWidget->setContextMenuPolicy(Qt::CustomContextMenu);
+	this->ui.tableWidget->installEventFilter(this);
 	this->ui.tableWidget->setColumnCount(6);
-	this->ui.tableWidget->setRowCount(2);
+	this->ui.tableWidget->setRowCount(1);
 	QStringList headerLables;
 	headerLables << "Enable" << "Instrument Type" << "Protocol"<<"Conncet Information String "<<"configure button"<<"Instrument Name";
 	this->ui.tableWidget->setHorizontalHeaderLabels(headerLables);
@@ -143,12 +251,13 @@ void instrumentconfiguration::init()
 	m_qComboBoxDelegateForDeviceType.registerEditorSetFunction(std::bind(&instrumentconfiguration::comboxDelegateEditorSet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 	m_qComboBoxDelegateForDeviceConnectInfor.registerEditorSetFunction(std::bind(&instrumentconfiguration::comboxDelegateEditorSet, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));
 	m_qComboBoxDelegateForDeviceConnectInfor.registerEditorDataOperationFunction(std::bind(&instrumentconfiguration::delegateComboxDataOp, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3, std::placeholders::_4));	
-	this->ui.tableWidget->setCellWidget(0, 4, getQToolButtonCellWidget());
-	this->ui.tableWidget->setCellWidget(0, 0, getQCheckBoxCellWidget());
+	this->ui.tableWidget->setCellWidget(0, 4, getQToolButtonCellWidget(0));
+	this->ui.tableWidget->setCellWidget(0, 0, getQCheckBoxCellWidget(0));
 	this->ui.tableWidget->setColumnWidth(0, 50);
-	this->ui.tableWidget->setColumnWidth(2, 70);
+	this->ui.tableWidget->setColumnWidth(1, 120);
+	this->ui.tableWidget->setColumnWidth(2, 80);
 	this->ui.tableWidget->setColumnWidth(3, 400);
-	this->ui.tableWidget->setColumnWidth(4, 100);
+	this->ui.tableWidget->setColumnWidth(4, 120);
 	this->ui.tableWidget->setColumnWidth(5, 150);
 	this->ui.tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Interactive);
 	this->ui.tableWidget->horizontalHeader()->setStretchLastSection(true);
@@ -171,23 +280,28 @@ void instrumentconfiguration::init()
 bool instrumentconfiguration::conncetSlots()
 {
 
-	//return connect(this->ui.tableWidget,&QTableWidget::cellClicked,this, &instrumentconfiguration::openConfigureForm);
-	return true;
+	return  connect(this->ui.tableWidget, &QTableWidget::itemChanged, this, &instrumentconfiguration::checkAndInsertNextSetRow)
+			&& connect(this->ui.tableWidget, &QTableWidget::customContextMenuRequested, this, &instrumentconfiguration::rowOperationMenu)
+			
+	;
+	
 }
 
-QToolButton *instrumentconfiguration::getQToolButtonCellWidget()
+QToolButton *instrumentconfiguration::getQToolButtonCellWidget(int row)
 {
 	QToolButton *configurationToolButton = new QToolButton;
 	configurationToolButton->setIcon(QIcon(":/Icon/Resource/Configuration.png"));
 	configurationToolButton->setText("Configure");
+	configurationToolButton->setProperty("row", row);
 	configurationToolButton->setToolButtonStyle(Qt::ToolButtonStyle::ToolButtonTextBesideIcon);
 	connect(configurationToolButton, &QToolButton::clicked, this, &instrumentconfiguration::openConfigureForm);
 	return  configurationToolButton;
 }
 
-QWidget *instrumentconfiguration::getQCheckBoxCellWidget()
+QWidget *instrumentconfiguration::getQCheckBoxCellWidget(int row)
 {
 	QCheckBox *instrumentEnableCheckBox = new QCheckBox;
+	instrumentEnableCheckBox->setProperty("row", row);
 	QWidget *widget = new QWidget(this->ui.tableWidget);
 	QHBoxLayout *layout = new QHBoxLayout;
 	layout->setSpacing(0); 

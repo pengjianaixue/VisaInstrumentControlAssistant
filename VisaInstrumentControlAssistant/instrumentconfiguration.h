@@ -26,18 +26,25 @@ public:
 public slots:
 	void openConfigureForm();
 	void setConncetStrInfor(const QString &instrumentmodel);
-//public:
-//	
-//	
+	void checkAndInsertNextSetRow( QTableWidgetItem *item);
+	void rowOperationMenu(const QPoint &pos);
+	void deleteRow();
+	void addRow();
+protected:
+	bool eventFilter(QObject *target, QEvent *event) override;
+signals:
+	//void si_InsertNexRow(QTableWidgetItem *item);
 private:
 	void init();
 	bool conncetSlots();
-	QToolButton *getQToolButtonCellWidget();
-	QWidget     *getQCheckBoxCellWidget();
+	QToolButton *getQToolButtonCellWidget(int row );
+	QWidget     *getQCheckBoxCellWidget(int row);
 	VisaControl::ProtocolType  getProtocolTypefromProtocolName(const QString &protocolname);
 	QStringList	getDeviceProtocolChoose(const QString &deviceIndex);
 	void comboxDelegateEditorSet(QWidget *parent, QComboBox *comboxdelegate, const int &row, const int &column);
-	QVariant delegateComboxDataOp(QComboBox *comboxdelegate, QVariant modeldata, QComboBoxDelegate::DATAOPTYPE dateoptype,const QModelIndex &index);
+	QVariant delegateComboxDataOp(QComboBox *comboxdelegate, QVariant modeldata, 
+		QComboBoxDelegate::DATAOPTYPE dateoptype,const QModelIndex &index);
+	void initRow(int row);
 	//QCheckBox   *getQCheckBoxCellWidget();
 
 private:

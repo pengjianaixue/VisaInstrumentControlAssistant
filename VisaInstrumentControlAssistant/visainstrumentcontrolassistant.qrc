@@ -11,5 +11,7 @@
         <file>Resource/checkbox_checked_disabled.png</file>
         <file>Resource/checkbox_checked_focus.png</file>
         <file>Resource/add.png</file>
+        <file>Resource/table-delete-row.png</file>
+        <file>Resource/delete.png</file>
     </qresource>
 </RCC>
