@@ -17,6 +17,7 @@ public:
 public slots:
 	bool setCurrentTab(const QString& tabname);
 	void applyLanWidget();
+	void applyUsbWidget();
 	void applyComportWidget();
 	void applyGPIBWidget();
 	void applySSHOrTelnetWidget();

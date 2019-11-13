@@ -24,7 +24,7 @@
       <string/>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>1</number>
      </property>
      <widget class="QWidget" name="tab_scoket">
       <property name="contextMenuPolicy">
@@ -305,7 +305,7 @@
             <widget class="QComboBox" name="comboBox_baudrate"/>
            </item>
            <item>
-            <widget class="QComboBox" name="comboBox_datebits"/>
+            <widget class="QComboBox" name="comboBox_databits"/>
            </item>
            <item>
             <widget class="QComboBox" name="comboBox_parity"/>
