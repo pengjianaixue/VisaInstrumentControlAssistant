@@ -174,13 +174,13 @@ void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox
 	{
 		if (!static_cast<QTableWidget*>(parent->parent())->item(row, 1))
 		{
-			QMessageBox::critical(nullptr, "Instrument type eroor", "Please choose the Instrument Type");
+			QMessageBox::critical(nullptr, "Instrument type error", "Please choose the Instrument Type");
 			return ;
 		}
 		QString devicetype = static_cast<QTableWidget*>(parent->parent())->item(row,1)->text();
 		if (devicetype.isEmpty())
 		{
-			QMessageBox::critical(nullptr, "Instrument type eroor", "Please choose the Instrument Type");
+			QMessageBox::critical(nullptr, "Instrument type error", "Please choose the Instrument Type");
 			return;
 		}
 		else
@@ -207,7 +207,7 @@ void instrumentconfiguration::comboxDelegateEditorSet(QWidget *parent, QComboBox
 					comboxdelegate->addItem(DisplayStr);
 				}
 				//connect(comboxdelegate, &QComboBox::currentTextChanged, this, &instrumentconfiguration::setConncetStrInfor);
-				// use the function param to specil the function
+				// use the function param to special the function
 				connect(comboxdelegate, SIGNAL(activated(const QString&)), this, SLOT(setConncetStrInfor(const QString &))); 
 			}
 		}
@@ -226,7 +226,10 @@ QVariant instrumentconfiguration::delegateComboxDataOp(QComboBox * comboxdelegat
 			return comboxdelegate->currentText();
 		}		
 	}
-	return QVariant(m_connectStr);
+	QVariant data = m_connectStr;
+	m_connectStr = QString();
+	return data;
+
 }
 
 void instrumentconfiguration::initRow(int row)
@@ -287,7 +290,7 @@ bool instrumentconfiguration::conncetSlots()
 	
 }
 
-QToolButton *instrumentconfiguration::getQToolButtonCellWidget(int row)
+QToolButton* instrumentconfiguration::getQToolButtonCellWidget(int row)
 {
 	QToolButton *configurationToolButton = new QToolButton;
 	configurationToolButton->setIcon(QIcon(":/Icon/Resource/Configuration.png"));
@@ -298,7 +301,7 @@ QToolButton *instrumentconfiguration::getQToolButtonCellWidget(int row)
 	return  configurationToolButton;
 }
 
-QWidget *instrumentconfiguration::getQCheckBoxCellWidget(int row)
+QWidget* instrumentconfiguration::getQCheckBoxCellWidget(int row)
 {
 	QCheckBox *instrumentEnableCheckBox = new QCheckBox;
 	instrumentEnableCheckBox->setProperty("row", row);

@@ -147,6 +147,7 @@ bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType pro
 		}
 		ViUInt32 cnt = 256;
 		ViUInt32 recnt = 0;
+		viSetAttribute(viseeioninstrument, VI_ATTR_TMO_VALUE, 2);
 		IOstatus = viPrintf(viseeioninstrument, "*IDN?\n");
 		if (IOstatus != VI_SUCCESS)
 		{
@@ -170,7 +171,7 @@ bool VisaControl::findInstrument(InstrumentType instrumenttype, ProtocolType pro
 		viClose(viseeioninstrument);
 		viFindNext(vifindlist, desc);
 	}
-
+	return true;
 }
 bool VisaControl::openInstrumentRM()
 {

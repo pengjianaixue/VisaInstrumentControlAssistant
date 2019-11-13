@@ -37,8 +37,8 @@ signals:
 private:
 	void init();
 	bool conncetSlots();
-	QToolButton *getQToolButtonCellWidget(int row );
-	QWidget     *getQCheckBoxCellWidget(int row);
+	QToolButton* getQToolButtonCellWidget(int row );
+	QWidget* getQCheckBoxCellWidget(int row);
 	VisaControl::ProtocolType  getProtocolTypefromProtocolName(const QString &protocolname);
 	QStringList	getDeviceProtocolChoose(const QString &deviceIndex);
 	void comboxDelegateEditorSet(QWidget *parent, QComboBox *comboxdelegate, const int &row, const int &column);
