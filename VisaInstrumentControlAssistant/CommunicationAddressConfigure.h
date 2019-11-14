@@ -75,15 +75,13 @@ public:
 
 	struct DeviceProtocolInfor
 	{
-		union ProtocolInfor
+		struct ProtocolInfor
 		{
 			struct GPIB					gpibInfor;
 			struct LANInfor				lanInfor;
 			struct ComPortInfor			comportInfor;
 			struct USB					usbInfor;
-			struct SSHandTelnetInfor	sshOrTelnetInfor;
-			ProtocolInfor() {};	 // must be define the constructor,if not define the compiler will be  mark it to be delete  
-			~ProtocolInfor() {}; // must be define the deconstructor,if not define the compiler will be  mark it to be delete  
+			struct SSHandTelnetInfor	sshOrTelnetInfor;  
 		};
 		ProtocolInfor protocoinfor;
 		ProtocolType protocoltype;
