@@ -12,15 +12,98 @@ class CommunicationAddressConfigure : public QDialog
 	Q_OBJECT
 
 public:
-	CommunicationAddressConfigure(QWidget *parent = Q_NULLPTR);
+
+	enum ProtocolType
+	{
+		TCP_IP,
+		UDP,
+		GPIB,
+		COM,
+		SSH,
+		Telnet
+	};
+	struct LANInfor
+	{
+		enum SocketType
+		{
+			TCP_IP,
+			UDP
+		};
+		QString ipAddress;
+		QString visaType;
+		QString remotePort;
+		QString LoaclPort;
+		SocketType socketType;
+		~LANInfor() = default;
+
+	};
+	struct ComPortInfor
+	{
+		QString comport;
+		QString baudRate;
+		QString dataBits;
+		QString Parity;
+		QString stopBits;
+		QString flowType;
+		~ComPortInfor() = default;
+	};
+	struct SSHandTelnetInfor
+	{
+		enum Protocol
+		{
+			SSH,
+			Telnet
+		};
+		QString  ipAddress;
+		QString  port;
+		QString  userName;
+		QString  password;
+		Protocol protocol;
+		QString  Prompt;
+		~SSHandTelnetInfor() = default;
+	};
+	struct GPIB
+	{
+		QString  GPIBAddress;
+		~GPIB() = default;
+	};
+	struct USB
+	{
+		QString  USBDevice;
+		~USB() = default;
+	};
+
+	struct DeviceProtocolInfor
+	{
+		union ProtocolInfor
+		{
+			struct GPIB					gpibInfor;
+			struct LANInfor				lanInfor;
+			struct ComPortInfor			comportInfor;
+			struct USB					usbInfor;
+			struct SSHandTelnetInfor	sshOrTelnetInfor;
+			ProtocolInfor() {};	 // must be define the constructor,if not define the compiler will be  mark it to be delete  
+			~ProtocolInfor() {}; // must be define the deconstructor,if not define the compiler will be  mark it to be delete  
+		};
+		ProtocolInfor protocoinfor;
+		ProtocolType protocoltype;
+	};
+	explicit CommunicationAddressConfigure(QWidget *parent = Q_NULLPTR);
 	~CommunicationAddressConfigure();
 public slots:
 	bool setCurrentTab(const QString& tabname);
-	void applyLanWidget();
-	void applyUsbWidget();
-	void applyComportWidget();
-	void applyGPIBWidget();
-	void applySSHOrTelnetWidget();
+	void applyWithLanWidget();
+	void applyWithUsbWidget();
+	void applyWithComportWidget();
+	void applyWithGPIBWidget();
+	void applyWithSSHOrTelnetWidget();
+	void cancelWithLanWidget();
+	void cancelWithUsbWidget();
+	void cancelWithComportWidget();
+	void cancelWithGPIBWidget();
+	void cancelWithSSHOrTelnetWidget();
+
+	void comPortBaudRateCustom(int index);
 protected:
 	void showEvent(QShowEvent *event) override;
 private:
@@ -33,4 +116,5 @@ private:
 	//QWidget* m_protocolwidget[5] = { nullptr };
 	std::map<QString,QWidget*>			m_protocolNameMapToWidget;
 	std::map<QWidget*,QString>			m_protocolWidgetMapToName;
+	DeviceProtocolInfor					m_deviceProtocolInfor;
 };
