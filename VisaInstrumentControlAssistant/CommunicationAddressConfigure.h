@@ -5,9 +5,9 @@
 #include <map>
 #include <QSerialPort>
 #include <QSerialPortInfo>
-#include "ui_CommunicationAddressConfigure.h"
+#include "ui_CommunicationProtocolConfigure.h"
 
-class CommunicationAddressConfigure : public QDialog
+class CommunicationProtocolConfigure : public QDialog
 {
 	Q_OBJECT
 
@@ -19,8 +19,10 @@ public:
 		UDP,
 		GPIB,
 		COM,
+		USB,
 		SSH,
-		Telnet
+		Telnet,
+		
 	};
 	struct LANInfor
 	{
@@ -59,12 +61,12 @@ public:
 		QString  userName;
 		QString  password;
 		Protocol protocol;
-		QString  Prompt;
+		QString  prompt;
 		~SSHandTelnetInfor() = default;
 	};
 	struct GPIB
 	{
-		QString  GPIBAddress;
+		QString  gpibAddress;
 		~GPIB() = default;
 	};
 	struct USB
@@ -86,10 +88,17 @@ public:
 		ProtocolInfor protocoinfor;
 		ProtocolType protocoltype;
 	};
-	explicit CommunicationAddressConfigure(QWidget *parent = Q_NULLPTR);
-	~CommunicationAddressConfigure();
+	enum OperationType
+	{
+		Apply,
+		Cancel
+	};
+	explicit CommunicationProtocolConfigure(QWidget *parent = Q_NULLPTR);
+	~CommunicationProtocolConfigure();
+	CommunicationProtocolConfigure::DeviceProtocolInfor getCommunicationProtocolInfor() const;
 public slots:
-	bool setCurrentTab(const QString& tabname);
+	bool setCurrentProtocol(const QString &tabName, const QString &protocolName);
+private slots:
 	void applyWithLanWidget();
 	void applyWithUsbWidget();
 	void applyWithComportWidget();
@@ -100,17 +109,28 @@ public slots:
 	void cancelWithComportWidget();
 	void cancelWithGPIBWidget();
 	void cancelWithSSHOrTelnetWidget();
-
 	void comPortBaudRateCustom(int index);
+signals:
+	/*
+	opeationType 
+	{ 
+		0 - cancel
+		1 - apply
+	}
+	*/
+	void operationCompletion(int opeationType);
+	
 protected:
 	void showEvent(QShowEvent *event) override;
 private:
 	void init();
 	bool connectSolts();
 	void comportFormInit();
+	void uiConfiguration(const QString &protocol);
+
 
 private:
-	Ui::CommunicationAddressConfigure ui;
+	Ui::CommunicationProtocolConfigure ui;
 	//QWidget* m_protocolwidget[5] = { nullptr };
 	std::map<QString,QWidget*>			m_protocolNameMapToWidget;
 	std::map<QWidget*,QString>			m_protocolWidgetMapToName;

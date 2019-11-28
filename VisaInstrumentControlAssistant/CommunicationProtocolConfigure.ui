@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>CommunicationAddressConfigure</class>
- <widget class="QDialog" name="CommunicationAddressConfigure">
+ <class>CommunicationProtocolConfigure</class>
+ <widget class="QDialog" name="CommunicationProtocolConfigure">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -191,7 +191,7 @@
         </layout>
        </item>
        <item row="2" column="0">
-        <widget class="QLabel" name="instrumentSocketTypeLabel_2">
+        <widget class="QLabel" name="instrumentVisaTypeLabel">
          <property name="text">
           <string>Visa Protocol</string>
          </property>

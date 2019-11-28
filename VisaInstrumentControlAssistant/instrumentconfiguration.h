@@ -55,7 +55,7 @@ private:
 	QComboBoxDelegate						m_qComboBoxDelegateForDeviceType;
 	QComboBoxDelegate						m_qComboBoxDelegateForDeviceProtocol;
 	QPushButtonDelegate						m_qPushButtonDelegateForDeviceConfig;
-	CommunicationAddressConfigure			*m_communicationAddressConfigureform = {nullptr};
+	CommunicationProtocolConfigure			*m_communicationAddressConfigureform = {nullptr};
 	std::map<QString, int>					m_deciveTypeMapToIndex;
 	std::list<VisaControl::InstrumentInfor> m_instrumentInforlist;
 	QString									m_connectStr;

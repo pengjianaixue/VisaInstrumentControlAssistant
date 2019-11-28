@@ -76,7 +76,7 @@
     <QtUic Include="instrumentconfiguration.ui">
       <Filter>Form Files</Filter>
     </QtUic>
-    <QtUic Include="CommunicationAddressConfigure.ui">
+    <QtUic Include="CommunicationProtocolConfigure.ui">
       <Filter>Form Files</Filter>
     </QtUic>
   </ItemGroup>

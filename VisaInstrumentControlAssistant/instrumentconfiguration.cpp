@@ -5,7 +5,7 @@
 //std::map<QString, int>	instrumentconfiguration::static_deciveTypeMapToIndex;
 //std::list<VisaControl::InstrumentInfor> instrumentconfiguration::static_instrumentInforlist;
 instrumentconfiguration::instrumentconfiguration(QWidget *parent)
-	: QDialog(parent), m_communicationAddressConfigureform(new CommunicationAddressConfigure(this))
+	: QDialog(parent), m_communicationAddressConfigureform(new CommunicationProtocolConfigure(this))
 	
 {
 	ui.setupUi(this);
@@ -44,7 +44,7 @@ void instrumentconfiguration::openConfigureForm()
 		{
 			protocoltypename = this->ui.tableWidget->item(row, 2)->text();
 		}
-		if(m_communicationAddressConfigureform->setCurrentTab(protocoltypename))
+		if(m_communicationAddressConfigureform->setCurrentProtocol(protocoltypename, this->ui.tableWidget->item(row, 2)->text()))
 			m_communicationAddressConfigureform->show();
 	}
 	else
